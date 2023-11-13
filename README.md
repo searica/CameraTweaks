@@ -54,4 +54,4 @@ If you like this mod you might like some of my other ones.
 - [DodgeShortcut](https://valheim.thunderstore.io/package/Searica/DodgeShortcut/)
 - [ProjectileTweaks](https://github.com/searica/ProjectileTweaks/)
 - [SkilledCarryWeight](https://github.com/searica/SkilledCarryWeight/)
-- [SafetyStatus](https://va[R E A D M E]()lheim.thunderstore.io/package/Searica/SafetyStatus/)
+- [SafetyStatus](https://valheim.thunderstore.io/package/Searica/SafetyStatus/)
