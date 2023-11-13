@@ -33,23 +33,13 @@ None so far, tell me if you find any.
   [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/searica)
 
 ## Source Code
-Github: [Link]
+Github: https://github.com/searica/CameraTweaks
 
 ### Contributions
 If you would like to provide suggestions, make feature requests, or reports bugs and compatibility issues you can either open an issue on the Github repository or tag me (@searica) with a message on my discord [Searica's Mods](https://discord.gg/sFmGTBYN6n).
 <!--the [Jotunn discord](https://discord.gg/DdUt6g7gyA), or the [Odin Plus discord](https://discord.gg/mbkPcvu9ax)-->
 
 I'm a grad student and have a lot of personal responsibilities on top of that so I can't promise I will respond quickly, but I do intend to maintain and improve the mod in my free time.
-
-### Credits
-This mod
-
-#### Development Credits
-- Huge shoutout and thanks to the developers of Jotunn for all their work making the library and to Margmas specifically for all their help and advice.
-- Thanks
-
-#### Community Credits
-- Thanks to
 
 ## Shameless Self Plug (Other Mods By Me)
 If you like this mod you might like some of my other ones.
@@ -64,3 +54,4 @@ If you like this mod you might like some of my other ones.
 - [DodgeShortcut](https://valheim.thunderstore.io/package/Searica/DodgeShortcut/)
 - [ProjectileTweaks](https://github.com/searica/ProjectileTweaks/)
 - [SkilledCarryWeight](https://github.com/searica/SkilledCarryWeight/)
+- [SafetyStatus](https://valheim.thunderstore.io/package/Searica/SafetyStatus/)
