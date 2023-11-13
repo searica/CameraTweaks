@@ -1,7 +1,7 @@
 ﻿{
   "name": "CameraTweaks",
   "description": "Client-side mod that lets you set the maximum distance you can zoom out to when on foot or in a boat.",
-  "version_number": "1.0.2",
+  "version_number": "1.0.3",
   "website_url": "https://discord.gg/sFmGTBYN6n",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2202"

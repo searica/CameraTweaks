@@ -5,6 +5,15 @@
 			<th align="center">Notes</th>
 		</tr>
 		<tr>
+			<td align="center">1.0.3</td>
+			<td align="left">
+				<ul>
+					<li>Fixed issue with camera settings sometimes not updating right away due to triggering on LateUpdate.</li>
+					<li>Changed icon.</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
 			<td align="center">1.0.0 - 1.0.2</td>
 			<td align="left">
 				<ul>

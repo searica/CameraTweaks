@@ -17,10 +17,11 @@ namespace CameraTweaks
         internal const string Author = "Searica";
         public const string PluginName = "CameraTweaks";
         public const string PluginGUID = $"{Author}.Valheim.{PluginName}";
-        public const string PluginVersion = "1.0.2";
+        public const string PluginVersion = "1.0.3";
 
         internal static ConfigEntry<float> MaxDistance;
         internal static ConfigEntry<float> MaxDistanceBoat;
+        private static bool UpdateCameraDistanceValues;
 
         private static readonly string MainSection = ConfigManager.SetStringPriority("Global", 1);
         private static readonly string CameraSection = "Camera";
@@ -58,17 +59,17 @@ namespace CameraTweaks
 
             MaxDistance.SettingChanged += delegate
             {
-                if (GameCamera.instance != null)
+                if (!UpdateCameraDistanceValues)
                 {
-                    GameCamera.instance.m_maxDistance = MaxDistance.Value;
+                    UpdateCameraDistanceValues = true;
                 }
             };
 
             MaxDistance.SettingChanged += delegate
             {
-                if (GameCamera.instance != null)
+                if (!UpdateCameraDistanceValues)
                 {
-                    GameCamera.instance.m_maxDistanceBoat = MaxDistanceBoat.Value;
+                    UpdateCameraDistanceValues = true;
                 }
             };
 
@@ -79,11 +80,25 @@ namespace CameraTweaks
             Game.isModded = true;
 
             ConfigManager.SetupWatcher();
+            ConfigManager.CheckForConfigManager();
+            ConfigManager.OnConfigFileReloaded += UpdateCameraDistance;
+            ConfigManager.OnConfigWindowClosed += UpdateCameraDistance;
         }
 
         public void OnDestroy()
         {
             ConfigManager.Save();
+        }
+
+        private static void UpdateCameraDistance()
+        {
+            if (GameCamera.instance != null && UpdateCameraDistanceValues)
+            {
+                GameCamera.instance.m_maxDistance = MaxDistance.Value;
+                GameCamera.instance.m_maxDistanceBoat = MaxDistanceBoat.Value;
+                GameCamera.instance.UpdateCamera(Time.unscaledDeltaTime);
+                UpdateCameraDistanceValues = false;
+            }
         }
     }
 
