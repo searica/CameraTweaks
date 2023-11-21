@@ -8,6 +8,7 @@ using CameraTweaks.Configs;
 using CameraTweaks.Extensions;
 using System.Reflection;
 using UnityEngine;
+using System;
 
 namespace CameraTweaks
 {
@@ -17,11 +18,12 @@ namespace CameraTweaks
         internal const string Author = "Searica";
         public const string PluginName = "CameraTweaks";
         public const string PluginGUID = $"{Author}.Valheim.{PluginName}";
-        public const string PluginVersion = "1.0.4";
+        public const string PluginVersion = "1.1.0";
 
         internal static ConfigEntry<float> MaxDistance;
         internal static ConfigEntry<float> MaxDistanceBoat;
-        private static bool UpdateCameraDistanceValues;
+        internal static ConfigEntry<float> CameraFoV;
+        private static bool ShouldUpdateCamera;
 
         private static readonly string MainSection = ConfigManager.SetStringPriority("Global", 1);
         private static readonly string CameraSection = "Camera";
@@ -41,48 +43,45 @@ namespace CameraTweaks
                 "it to this without good reason as it will slow Down your game."
             );
 
+            CameraFoV = ConfigManager.BindConfig(
+                CameraSection,
+                "Field of View",
+                65f,
+                "Camera field of view in degrees. Vanilla default is 65.",
+                new AcceptableValueRange<float>(60f, 120f)
+            );
+
             MaxDistance = ConfigManager.BindConfig(
                 CameraSection,
-                "MaxDistance",
+                "Max Distance",
                 6f,
-                "Maximum distance you can zoom out to. Vanilla default is 6.",
+                "Maximum distance you can zoom out to while on foot. Vanilla default is 6.",
                 new AcceptableValueRange<float>(6f, 20f)
             );
 
             MaxDistanceBoat = ConfigManager.BindConfig(
                 CameraSection,
-                "MaxDistanceBoat",
+                "Max Distance (Boat)",
                 12f,
                 "Maximum distance you can zoom out to while in a boat. Vanilla default is 6.",
                 new AcceptableValueRange<float>(6f, 20f)
             );
 
-            MaxDistance.SettingChanged += delegate
-            {
-                if (!UpdateCameraDistanceValues)
-                {
-                    UpdateCameraDistanceValues = true;
-                }
-            };
+            
 
-            MaxDistance.SettingChanged += delegate
-            {
-                if (!UpdateCameraDistanceValues)
-                {
-                    UpdateCameraDistanceValues = true;
-                }
-            };
+            MaxDistance.SettingChanged += SetShouldUpdateCamera;
+            MaxDistance.SettingChanged += SetShouldUpdateCamera;
+            CameraFoV.SettingChanged += SetShouldUpdateCamera;
 
             ConfigManager.Save();
-            ConfigManager.SaveOnConfigSet(true);
 
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), harmonyInstanceId: PluginGUID);
             Game.isModded = true;
 
             ConfigManager.SetupWatcher();
             ConfigManager.CheckForConfigManager();
-            ConfigManager.OnConfigFileReloaded += UpdateCameraDistance;
-            ConfigManager.OnConfigWindowClosed += UpdateCameraDistance;
+            ConfigManager.OnConfigFileReloaded += UpdateCameraSettings;
+            ConfigManager.OnConfigWindowClosed += UpdateCameraSettings;
         }
 
         public void OnDestroy()
@@ -90,20 +89,27 @@ namespace CameraTweaks
             ConfigManager.Save();
         }
 
-        private static void UpdateCameraDistance()
+        private static void SetShouldUpdateCamera(object obj, EventArgs e)
         {
-            if (GameCamera.instance != null && UpdateCameraDistanceValues)
+            ShouldUpdateCamera = !ShouldUpdateCamera | ShouldUpdateCamera;
+        }
+
+        private static void UpdateCameraSettings()
+        {
+            if (GameCamera.instance != null && ShouldUpdateCamera)
             {
                 GameCamera.instance.m_maxDistance = MaxDistance.Value;
                 GameCamera.instance.m_maxDistanceBoat = MaxDistanceBoat.Value;
+                GameCamera.instance.m_fov = CameraFoV.Value;
                 GameCamera.instance.UpdateCamera(Time.unscaledDeltaTime);
-                UpdateCameraDistanceValues = false;
+                ShouldUpdateCamera = false;
+                ConfigManager.Save();
             }
         }
     }
 
     [HarmonyPatch(typeof(GameCamera))]
-    internal class GameCameraPatch
+    internal static class GameCameraPatch
     {
         [HarmonyPostfix]
         [HarmonyPatch(nameof(GameCamera.Awake))]
@@ -136,7 +142,7 @@ namespace CameraTweaks
 
         #endregion Verbosity
 
-        internal static ManualLogSource _logSource;
+        private static ManualLogSource _logSource;
 
         internal static void Init(ManualLogSource logSource)
         {

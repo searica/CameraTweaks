@@ -5,6 +5,15 @@
 			<th align="center">Notes</th>
 		</tr>
 		<tr>
+			<td align="center">1.1.0</td>
+			<td align="left">
+				<ul>
+					<li>Added setting to control FoV</li>
+					<li>Minor optimizations to filewatcher.</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
 			<td align="center">1.0.3/1.0.4</td>
 			<td align="left">
 				<ul>
