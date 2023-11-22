@@ -13,7 +13,7 @@ using System;
 namespace CameraTweaks
 {
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
-    internal class CameraTweaks : BaseUnityPlugin
+    internal sealed class CameraTweaks : BaseUnityPlugin
     {
         internal const string Author = "Searica";
         public const string PluginName = "CameraTweaks";
@@ -67,7 +67,7 @@ namespace CameraTweaks
                 new AcceptableValueRange<float>(6f, 20f)
             );
 
-            
+
 
             MaxDistance.SettingChanged += SetShouldUpdateCamera;
             MaxDistance.SettingChanged += SetShouldUpdateCamera;
@@ -117,6 +117,7 @@ namespace CameraTweaks
         {
             __instance.m_maxDistance = CameraTweaks.MaxDistance.Value;
             __instance.m_maxDistanceBoat = CameraTweaks.MaxDistanceBoat.Value;
+            __instance.m_fov = CameraTweaks.CameraFoV.Value;
         }
     }
 
