@@ -18,7 +18,7 @@ namespace CameraTweaks
         internal const string Author = "Searica";
         public const string PluginName = "CameraTweaks";
         public const string PluginGUID = $"{Author}.Valheim.{PluginName}";
-        public const string PluginVersion = "1.1.0";
+        public const string PluginVersion = "1.1.1";
 
         internal static ConfigEntry<float> MaxDistance;
         internal static ConfigEntry<float> MaxDistanceBoat;
@@ -91,12 +91,12 @@ namespace CameraTweaks
 
         private static void SetShouldUpdateCamera(object obj, EventArgs e)
         {
-            ShouldUpdateCamera = !ShouldUpdateCamera | ShouldUpdateCamera;
+            ShouldUpdateCamera |= !ShouldUpdateCamera;
         }
 
         private static void UpdateCameraSettings()
         {
-            if (GameCamera.instance != null && ShouldUpdateCamera)
+            if (ShouldUpdateCamera && GameCamera.instance != null)
             {
                 GameCamera.instance.m_maxDistance = MaxDistance.Value;
                 GameCamera.instance.m_maxDistanceBoat = MaxDistanceBoat.Value;

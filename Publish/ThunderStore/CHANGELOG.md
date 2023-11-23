@@ -8,6 +8,15 @@
 			<td align="center">1.1.0</td>
 			<td align="left">
 				<ul>
+					<li>Fixed bug where FoV would only update if config was changed in-game.</li>
+					<li>Minor performance optimizations.</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td align="center">1.1.0</td>
+			<td align="left">
+				<ul>
 					<li>Added setting to control FoV</li>
 					<li>Minor optimizations to filewatcher.</li>
 				</ul>
