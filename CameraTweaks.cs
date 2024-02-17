@@ -23,6 +23,7 @@ namespace CameraTweaks
         internal static ConfigEntry<float> MaxDistance;
         internal static ConfigEntry<float> MaxDistanceBoat;
         internal static ConfigEntry<float> CameraFoV;
+        internal static ConfigEntry<bool> AlwaysFaceCamera;
         private static bool ShouldUpdateCamera;
 
         private static readonly string MainSection = ConfigManager.SetStringPriority("Global", 1);
@@ -67,6 +68,12 @@ namespace CameraTweaks
                 new AcceptableValueRange<float>(6f, 20f)
             );
 
+            AlwaysFaceCamera = ConfigManager.BindConfig(
+                CameraSection,
+                "Always Face Camera",
+                false,
+                "Controls whether the player character will always face in the direction of the crosshairs."
+            );
 
 
             MaxDistance.SettingChanged += SetShouldUpdateCamera;
@@ -108,16 +115,31 @@ namespace CameraTweaks
         }
     }
 
-    [HarmonyPatch(typeof(GameCamera))]
-    internal static class GameCameraPatch
+
+    [HarmonyPatch]
+    internal static class GameCameraPatches
     {
         [HarmonyPostfix]
-        [HarmonyPatch(nameof(GameCamera.Awake))]
+        [HarmonyPatch(typeof(GameCamera), nameof(GameCamera.Awake))]
         private static void GameCameraAwakePostfix(GameCamera __instance)
         {
             __instance.m_maxDistance = CameraTweaks.MaxDistance.Value;
             __instance.m_maxDistanceBoat = CameraTweaks.MaxDistanceBoat.Value;
             __instance.m_fov = CameraTweaks.CameraFoV.Value;
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(Player), nameof(Player.AlwaysRotateCamera))]
+        public static bool AlwaysRotateCameraPrefix(Player __instance, ref bool __result)
+        {
+            if (CameraTweaks.AlwaysFaceCamera.Value && __instance.GetCurrentWeapon() != null && !__instance.InEmote())
+            {
+                __result = true;
+                return false;
+            }
+
+            __result = false;
+            return true;
         }
     }
 
