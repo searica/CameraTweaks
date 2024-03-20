@@ -5,7 +5,15 @@
 			<th align="center">Notes</th>
 		</tr>
 		<tr>
-			<td align="center">1.1.0</td>
+			<td align="center">1.1.2</td>
+			<td align="left">
+				<ul>
+					<li>Added option to lock the direction your character faces to always be the same as the camera direction.</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td align="center">1.1.1</td>
 			<td align="left">
 				<ul>
 					<li>Fixed bug where FoV would only update if config was changed in-game.</li>

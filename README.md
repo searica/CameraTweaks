@@ -32,6 +32,12 @@ Changes made to the configuration settings will be reflected in-game immediately
   </tbody>
 </table>
 
+AlwaysFaceCamera = ConfigManager.BindConfig(
+                CameraSection,
+                "",
+                false,
+                ""
+            );
 <div class="header">
 	<h3>Camera Section</h3>
     These settings control the main features of the mod that allow you to tweak the camera.
@@ -42,6 +48,17 @@ Changes made to the configuration settings will be reflected in-game immediately
             <th align="center">Setting</th>
             <th align="center">Server Sync</th>
 			<th align="center">Description</th>
+		</tr>
+		<tr>
+            <td align="center"><b>Always Face Camera</b></td>
+            <td align="center">Yes</td>
+			<td align="left">
+                Controls whether the player character will always face in the direction of the crosshairs. If left as false, then Vanilla camera behaviour will be used.
+				<ul>
+					<li>Acceptable values: true, false</li>
+					<li>Default value: false</li>
+				</ul>
+			</td>
 		</tr>
 		<tr>
             <td align="center"><b>Field of View</b></td>
