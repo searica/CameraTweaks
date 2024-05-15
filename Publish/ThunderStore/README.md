@@ -121,15 +121,15 @@ I'm a grad student and have a lot of personal responsibilities on top of that so
 If you like this mod you might like some of my other ones.
 
 #### Building Mods
-- [More Vanilla Build Prefabs](https://valheim.thunderstore.io/package/Searica/More_Vanilla_Build_Prefabs/)
-- [Extra Snap Points Made Easy](https://valheim.thunderstore.io/package/Searica/Extra_Snap_Points_Made_Easy/)
-- [AdvancedTerrainModifiers](https://valheim.thunderstore.io/package/Searica/AdvancedTerrainModifiers/)
-- [ToolTweaks](https://valheim.thunderstore.io/package/Searica/ToolTweaks/)
-- [BuildRestrictionTweaksSync](https://valheim.thunderstore.io/package/Searica/BuildRestrictionTweaksSync/)
+- [More Vanilla Build Prefabs](https://thunderstore.io/c/valheim/p/Searica/More_Vanilla_Build_Prefabs/)
+- [Extra Snap Points Made Easy](https://thunderstore.io/c/valheim/p/Searica/Extra_Snap_Points_Made_Easy/)
+- [AdvancedTerrainModifiers](https://thunderstore.io/c/valheim/p/Searica/AdvancedTerrainModifiers/)
+- [BuildRestrictionTweaksSync](https://thunderstore.io/c/valheim/p/Searica/BuildRestrictionTweaksSync/)
+- [ToolTweaks](https://thunderstore.io/c/valheim/p/Searica/ToolTweaks/)
 
 #### Gameplay Mods
-- [DodgeShortcut](https://valheim.thunderstore.io/package/Searica/DodgeShortcut/)
-- [FortifySkillsRedux](https://valheim.thunderstore.io/package/Searica/FortifySkillsRedux/)
-- [ProjectileTweaks](https://github.com/searica/ProjectileTweaks/)
-- [SkilledCarryWeight](https://github.com/searica/SkilledCarryWeight/)
-- [SafetyStatus](https://valheim.thunderstore.io/package/Searica/SafetyStatus/)
+- [DodgeShortcut](https://thunderstore.io/c/valheim/p/Searica/DodgeShortcut/)
+- [FortifySkillsRedux](https://thunderstore.io/c/valheim/p/Searica/FortifySkillsRedux/)
+- [ProjectileTweaks](https://thunderstore.io/c/valheim/p/Searica/ProjectileTweaks/)
+- [SkilledCarryWeight](https://thunderstore.io/c/valheim/p/Searica/SkilledCarryWeight/)
+- [SafetyStatus](https://thunderstore.io/c/valheim/p/Searica/SafetyStatus/)
