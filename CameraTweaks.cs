@@ -2,13 +2,11 @@
 
 using BepInEx;
 using BepInEx.Configuration;
-using BepInEx.Logging;
 using HarmonyLib;
-using CameraTweaks.Configs;
-using CameraTweaks.Extensions;
 using System.Reflection;
 using UnityEngine;
 using System;
+using Logging;
 
 namespace CameraTweaks
 {
@@ -18,7 +16,7 @@ namespace CameraTweaks
         internal const string Author = "Searica";
         public const string PluginName = "CameraTweaks";
         public const string PluginGUID = $"{Author}.Valheim.{PluginName}";
-        public const string PluginVersion = "1.3.0";
+        public const string PluginVersion = "1.3.1";
 
         internal static ConfigEntry<float> MaxDistance;
         internal static ConfigEntry<float> MaxDistanceBoat;
@@ -26,53 +24,58 @@ namespace CameraTweaks
         internal static ConfigEntry<bool> AlwaysFaceCamera;
         private static bool ShouldUpdateCamera;
 
-        private static readonly string MainSection = ConfigManager.SetStringPriority("Global", 1);
+        private static readonly string MainSection = "Global";
         private static readonly string CameraSection = "Camera";
 
         public void Awake()
         {
             Log.Init(Logger);
 
-            ConfigManager.Init(PluginGUID, Config, false);
+            Config.Init(PluginGUID, false);
 
-            Log.Verbosity = ConfigManager.BindConfig(
+            Log.Verbosity = Config.BindConfigInOrder(
                 MainSection,
                 "Verbosity",
-                LogLevel.Low,
+                Log.LogLevel.Low,
                 "Low will log basic information about the mod. Medium will log information that " +
                 "is useful for troubleshooting. High will log a lot of information, do not set " +
-                "it to this without good reason as it will slow Down your game."
+                "it to this without good reason as it will slow Down your game.",
+                synced: false
             );
 
-            CameraFoV = ConfigManager.BindConfig(
+            CameraFoV = Config.BindConfigInOrder(
                 CameraSection,
                 "Field of View",
                 65f,
                 "Camera field of view in degrees. Vanilla default is 65.",
-                new AcceptableValueRange<float>(60f, 120f)
+                new AcceptableValueRange<float>(60f, 120f),
+                synced: false
             );
 
-            MaxDistance = ConfigManager.BindConfig(
+            MaxDistance = Config.BindConfigInOrder(
                 CameraSection,
                 "Max Distance",
                 6f,
                 "Maximum distance you can zoom out to while on foot. Vanilla default is 6.",
-                new AcceptableValueRange<float>(6f, 20f)
+                new AcceptableValueRange<float>(6f, 20f),
+                synced: false
             );
 
-            MaxDistanceBoat = ConfigManager.BindConfig(
+            MaxDistanceBoat = Config.BindConfigInOrder(
                 CameraSection,
                 "Max Distance (Boat)",
                 12f,
                 "Maximum distance you can zoom out to while in a boat. Vanilla default is 6.",
-                new AcceptableValueRange<float>(6f, 20f)
+                new AcceptableValueRange<float>(6f, 20f),
+                synced: false
             );
 
-            AlwaysFaceCamera = ConfigManager.BindConfig(
+            AlwaysFaceCamera = Config.BindConfigInOrder(
                 CameraSection,
                 "Always Face Camera",
                 false,
-                "Controls whether the player character will always face in the direction of the crosshairs."
+                "Controls whether the player character will always face in the direction of the crosshairs.",
+                synced: false
             );
 
 
@@ -80,28 +83,28 @@ namespace CameraTweaks
             MaxDistance.SettingChanged += SetShouldUpdateCamera;
             CameraFoV.SettingChanged += SetShouldUpdateCamera;
 
-            ConfigManager.Save();
+            Config.Save();
 
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), harmonyInstanceId: PluginGUID);
             Game.isModded = true;
 
-            ConfigManager.SetupWatcher();
-            ConfigManager.CheckForConfigManager();
-            ConfigManager.OnConfigFileReloaded += UpdateCameraSettings;
-            ConfigManager.OnConfigWindowClosed += UpdateCameraSettings;
+            Config.SetupWatcher();
+            Config.CheckForConfigManager();
+            ConfigFileManager.OnConfigFileReloaded += UpdateCameraSettings;
+            ConfigFileManager.OnConfigWindowClosed += UpdateCameraSettings;
         }
 
         public void OnDestroy()
         {
-            ConfigManager.Save();
+            Config.Save();
         }
 
-        private static void SetShouldUpdateCamera(object obj, EventArgs e)
+        private void SetShouldUpdateCamera(object obj, EventArgs e)
         {
             ShouldUpdateCamera |= !ShouldUpdateCamera;
         }
 
-        private static void UpdateCameraSettings()
+        private void UpdateCameraSettings()
         {
             if (ShouldUpdateCamera && GameCamera.instance != null)
             {
@@ -110,14 +113,14 @@ namespace CameraTweaks
                 GameCamera.instance.m_fov = CameraFoV.Value;
                 GameCamera.instance.UpdateCamera(Time.unscaledDeltaTime);
                 ShouldUpdateCamera = false;
-                ConfigManager.Save();
+                Config.Save();
             }
         }
     }
 
 
     [HarmonyPatch]
-    internal static class GameCameraPatches
+    internal static class CameraPatches
     {
         [HarmonyPostfix]
         [HarmonyPatch(typeof(GameCamera), nameof(GameCamera.Awake))]
@@ -126,6 +129,31 @@ namespace CameraTweaks
             __instance.m_maxDistance = CameraTweaks.MaxDistance.Value;
             __instance.m_maxDistanceBoat = CameraTweaks.MaxDistanceBoat.Value;
             __instance.m_fov = CameraTweaks.CameraFoV.Value;
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPriority(Priority.Last)]
+        [HarmonyPatch(typeof(GameCamera), nameof(GameCamera.UpdateCamera))]
+        public static void GameCamera_UpdateCamera_MaxDistBoat_Prefix(GameCamera __instance, ref float __state)
+        {
+            if (Player.m_localPlayer && Player.m_localPlayer.IsAttachedToShip())
+            {
+                __state = __instance.m_maxDistance;
+                __instance.m_maxDistance = __instance.m_maxDistanceBoat;
+                return;
+            }
+            __state = -1f;
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPriority(Priority.Last)]
+        [HarmonyPatch(typeof(GameCamera), nameof(GameCamera.UpdateCamera))]
+        public static void GameCamera_UpdateCamera_MaxDistBoat_Postfix(GameCamera __instance, float __state)
+        {
+            if (__state != -1f)
+            {
+                __instance.m_maxDistance = __state;
+            } 
         }
 
         [HarmonyPrefix]
@@ -140,92 +168,6 @@ namespace CameraTweaks
 
             __result = false;
             return true;
-        }
-    }
-
-    /// <summary>
-    ///     Log level to control output to BepInEx log
-    /// </summary>
-    internal enum LogLevel
-    {
-        Low = 0,
-        Medium = 1,
-        High = 2,
-    }
-
-    /// <summary>
-    ///     Helper class for properly logging from static contexts.
-    /// </summary>
-    internal static class Log
-    {
-        #region Verbosity
-
-        internal static ConfigEntry<LogLevel> Verbosity { get; set; }
-        internal static LogLevel VerbosityLevel => Verbosity.Value;
-
-        #endregion Verbosity
-
-        private static ManualLogSource _logSource;
-
-        internal static void Init(ManualLogSource logSource)
-        {
-            _logSource = logSource;
-        }
-
-        internal static void LogDebug(object data) => _logSource.LogDebug(data);
-
-        internal static void LogError(object data) => _logSource.LogError(data);
-
-        internal static void LogFatal(object data) => _logSource.LogFatal(data);
-
-        internal static void LogInfo(object data, LogLevel level = LogLevel.Low)
-        {
-            if (VerbosityLevel >= level)
-            {
-                _logSource.LogInfo(data);
-            }
-        }
-
-        internal static void LogMessage(object data) => _logSource.LogMessage(data);
-
-        internal static void LogWarning(object data) => _logSource.LogWarning(data);
-
-        internal static void LogGameObject(GameObject prefab, bool includeChildren = false)
-        {
-            LogInfo("***** " + prefab.name + " *****");
-            foreach (Component compo in prefab.GetComponents<Component>())
-            {
-                LogComponent(compo);
-            }
-
-            if (!includeChildren) { return; }
-
-            LogInfo("***** " + prefab.name + " (children) *****");
-            foreach (Transform child in prefab.transform)
-            {
-                LogInfo($" - {child.gameObject.name}");
-                foreach (Component compo in child.gameObject.GetComponents<Component>())
-                {
-                    LogComponent(compo);
-                }
-            }
-        }
-
-        internal static void LogComponent(Component compo)
-        {
-            LogInfo($"--- {compo.GetType().Name}: {compo.name} ---");
-
-            PropertyInfo[] properties = compo.GetType().GetProperties(ReflectionUtils.AllBindings);
-            foreach (var property in properties)
-            {
-                LogInfo($" - {property.Name} = {property.GetValue(compo)}");
-            }
-
-            FieldInfo[] fields = compo.GetType().GetFields(ReflectionUtils.AllBindings);
-            foreach (var field in fields)
-            {
-                LogInfo($" - {field.Name} = {field.GetValue(compo)}");
-            }
         }
     }
 }
