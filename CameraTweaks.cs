@@ -16,7 +16,7 @@ namespace CameraTweaks
         internal const string Author = "Searica";
         public const string PluginName = "CameraTweaks";
         public const string PluginGUID = $"{Author}.Valheim.{PluginName}";
-        public const string PluginVersion = "1.3.1";
+        public const string PluginVersion = "1.4.0";
 
         internal static ConfigEntry<float> MaxDistance;
         internal static ConfigEntry<float> MaxDistanceBoat;
