@@ -5,6 +5,15 @@
 			<th align="center">Notes</th>
 		</tr>
 		<tr>
+			<td align="center">1.4.1</td>
+			<td align="left">
+				<ul>
+					<li>Increase the maximum allowed distance for zooming out when on a boat because the newest boat sucks to sail.</li>
+					<li>Increased the default allowed distances for zooming.</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
 			<td align="center">1.4.0</td>
 			<td align="left">
 				<ul>

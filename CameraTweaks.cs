@@ -16,7 +16,7 @@ namespace CameraTweaks
         internal const string Author = "Searica";
         public const string PluginName = "CameraTweaks";
         public const string PluginGUID = $"{Author}.Valheim.{PluginName}";
-        public const string PluginVersion = "1.4.0";
+        public const string PluginVersion = "1.4.1";
 
         internal static ConfigEntry<float> MaxDistance;
         internal static ConfigEntry<float> MaxDistanceBoat;
@@ -55,7 +55,7 @@ namespace CameraTweaks
             MaxDistance = Config.BindConfigInOrder(
                 CameraSection,
                 "Max Distance",
-                6f,
+                8f,
                 "Maximum distance you can zoom out to while on foot. Vanilla default is 6.",
                 new AcceptableValueRange<float>(6f, 20f),
                 synced: false
@@ -64,9 +64,9 @@ namespace CameraTweaks
             MaxDistanceBoat = Config.BindConfigInOrder(
                 CameraSection,
                 "Max Distance (Boat)",
-                12f,
+                20f,
                 "Maximum distance you can zoom out to while in a boat. Vanilla default is 6.",
-                new AcceptableValueRange<float>(6f, 20f),
+                new AcceptableValueRange<float>(6f, 32f),
                 synced: false
             );
 
